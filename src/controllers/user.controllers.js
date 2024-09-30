@@ -7,6 +7,7 @@ import {
   deleteFromCloudinary,
 } from "../utils/cloudinary.js";
 import jwt from "jsonwebtoken";
+import { cookieOptions } from "../utils/cookieOptions.js";
 
 const generateAccessAndRefreshToken = async (userId) => {
   try {
@@ -163,15 +164,15 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new ApiError(404, "User not found");
   }
 
-  const options = {
-    httpOnly: true, //make cookie accessible only by the web server not by the user/client
-    secure: process.env.NODE_ENV === "production", //true only when in production environment.
-  };
+  // const options = {
+  //   httpOnly: true, //make cookie accessible only by the web server not by the user/client
+  //   secure: process.env.NODE_ENV === "production", //true only when in production environment.
+  // };
 
   return res
     .status(200)
-    .cookie("accessToken", accessToken, options)
-    .cookie("refreshToken", refreshToken, options)
+    .cookie("accessToken", accessToken, cookieOptions)
+    .cookie("refreshToken", refreshToken, cookieOptions)
     .json(
       new ApiResponse(
         200,
@@ -194,15 +195,15 @@ const logoutUser = asyncHandler(async (req, res) => {
     }
   );
 
-  const options = {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-  };
+  // const options = {
+  //   httpOnly: true,
+  //   secure: process.env.NODE_ENV === "production",
+  // };
 
   return res
     .status(200)
-    .clearCookie("accessToken", options)
-    .clearCookie("refreshToken", options)
+    .clearCookie("accessToken", cookieOptions)
+    .clearCookie("refreshToken", cookieOptions)
     .json(new ApiResponse(200, {}, "User logged out successfully"));
 });
 
